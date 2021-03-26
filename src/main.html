@@ -1,0 +1,138 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	 <head>
+	 <title>Cyclist Trip Planner</title>
+	 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	 <script src="cyclist.js"></script> 
+	 </head>
+ 
+	 <body>
+		<section id="cyclist_planner_form">
+			<div id="input">
+				<input v-model="tripName" id="tripName"></input>
+				
+				<input v-model="date" id="date"></input>
+				
+				<input v-model="terrain" id="terrain"></input>
+				
+				<input v-model="distance" id="distance"></input>
+				
+				<input v-model="targetTime" id="time"></input>
+				
+				<input id="planTrip" type="button" v-on:click="planTrip()" value="Add Trip"></input>
+				
+				<input id="sortTrip" type="button" v-on:click="sortTrip()" value="Sort Trip"></input>
+			</div>
+			<br/>
+			<br/>
+			<table>
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Trip Name</th>
+						<th>Date</th>
+						<th>Terrain</th>
+						<th>Distance</th>
+						<th>target Time Finished</th>
+						<th>Estimated Speed</th>
+						<th>Completed</th>
+						<th>Update</th>
+						<th>Delete</th>
+						<th><input type="button" v-on:click="active()" value="Active Planned Trips"></input></th>
+						<th><input type="button" v-on:click="deleteAll()" value="Remove All"></input></th>
+					</tr>
+				</thead>
+				<input id="save" type="button" value="Save" v-on:click="save()"></input>
+				<input id="reload" type="button" value="Reload" v-on:click="unload()"></input>
+				<br/>
+				<br/>
+				<hr/>
+				<input type="search" v-model="search" placeholder="Search" />
+				<tbody v-if="data" id="output">
+                            <tr v-for="item in filteredResources">
+                                <td v-bind:href="item.id" target="_blank">{{item.id}}</td>
+                                <td v-bind:href="item.id" target="_blank">{{item.tripName}}</td>
+								<td v-bind:href="item.id" target="_blank">{{item.date}}</td>
+								<td v-bind:href="item.id" target="_blank">{{item.terrain}}</td>
+								<td v-bind:href="item.id" target="_blank">{{item.distance}}</td>
+								<td v-bind:href="item.id" target="_blank">{{item.targetTimeFinished}}</td>
+								<td v-bind:href="item.id" target="_blank">{{item.estimatedSpeed}}</td>
+								<td v-bind:href="item.id" target="_blank" v-if="!item.done">No</td>
+								<td v-bind:href="item.id" target="_blank" v-else>Yes<td>
+								<td><input v-bind:href="item.id" target="_blank" id="update" type="button" value="Update" v-on:click="update(item.id)"></input></td>
+								<td><input v-bind:href="item.id" target="_blank" id="remove" type="button" value="Delete" v-on:click="remove(item.id)"></input></td>
+                            </tr>
+					<p>Number of records: {{Sum()}}</p>
+					<p>Total Distance of Planned Trips: {{distanceSum()}}</p>
+				</tbody>
+
+			</table>
+		</section>
+		<script>
+			// Controller
+			var app = new Vue({
+				el: '#cyclist_planner_form',
+				data: {
+					search: '',
+					tripName: '',
+					date: '',
+					terrain: '',
+					distance: '',
+					targetTime: '',
+					data: false,
+					cycle: new Cyclist()
+				},
+				methods:{
+					planTrip: function(){
+						this.cycle.addTrip(this.tripName, this.date, this.terrain, this.distance, this.targetTime)
+						this.data = true
+						this.tripName = ''
+						this.date = ''
+						this.terrain = ''
+						this.distance = ''
+						this.targetTime = ''
+					},
+					sortTrip: function(){
+						return this.cycle.sortTrip()
+					},
+					plannedTrip:function(){
+						return this.cycle.getAllTrips()
+					},
+					Sum: function(){
+						return this.cycle.getSum()
+					},
+					update: function(m){
+						return none
+					},
+					remove: function(m){
+						this.cycle.removeTrip(m)
+					},
+					save: function(){
+						this.cycle.saveTrip()
+					},
+					unload: function(){
+						this.data = true
+						return this.cycle.unloadTrip()
+					},
+					distanceSum: function(){
+						return this.cycle.getDistanceSum()
+					}
+				},
+				computed:{
+					filteredResources (){
+					  if(this.search){
+						return this.cycle.findTrip(this.search)
+
+					  }
+					  else{
+						return this.cycle.getAllTrips();
+					  }
+				}
+			}
+			})
+			
+			
+			
+		</script>
+	 </body>
+ </html>
